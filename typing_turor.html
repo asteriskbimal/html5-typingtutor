@@ -1,0 +1,459 @@
+<html>
+<head>
+<style type="text/css">
+button{
+margin-top:5px;
+margin-left:5px;
+
+}
+
+
+#wrapper
+{margin:100px;
+ width: 1016px;
+border:2px solid
+}
+#sprites
+{
+margin-left: 123px;
+margin-top:10px;
+margin-bottom:5px;
+}
+#canvas
+{margin-top:5px;
+margin-left:5px;
+}
+</style>
+
+<script type="text/javascript">
+/*
+ -----------------------------------------------------
+ @name           Typing Tutor in HTML5/Canvas 
+ @version        0.1
+ @author         Bimal Sharma
+ @author-url     http://bimalsharma.com.np 
+ @scripturl      http://labs.semicolondev.com
+ @description    Online Typing Tutor  
+ -----------------------------------------------------
+*/
+
+var str="typing tutor:enter a string to practice typing"; 
+var context,canvas;
+var x, y; //coordinates
+var cursorShift=70;
+var image1=new Image(200,200);
+var k=0,i=0,strLength=0,strCount=0,tempCount=0,rectClear=0,rectTemp,c;
+var charc,chac,activate=0;
+//var streng=new Array();
+var strings=new Array();
+var colour="#FF0000";
+ var rectangles = [];
+ var letters="QWERTYUIOP[]ASDFGHJKL:'ZXCVBNM,./";
+ var lettersm="qwertyuiop{}asdfghjkl;zxcvbnm<>?";
+ 
+
+    for (var n = 0; n < 34; n++) 
+	{
+	    if(n<12)
+	    {
+            rectangles.push(  
+		    {
+            x: n * 53 + 180,
+            y: 250,
+            width: 50,
+            height: 50,
+            color: colour,
+			letter:letters[n],
+			letter1:lettersm[n],
+            }); 
+		}
+        else	if(n>=12&&n<23)
+        {
+            rectangles.push(
+			{
+            x: (n-11.5) * 53 + 180,
+            y: 310,
+            width: 50,
+            height: 50,
+            color:colour,
+			letter:letters[n],
+			letter1:lettersm[n],
+            });
+        }
+		else if(n==33)
+		{
+		rectangles.push(  
+		    {
+            x: (n-30.5) * 53 + 180,
+            y: 430,
+            width: 300,
+            height: 50,
+            color: colour,
+			letter:"               Space bar",
+			letter1:"               Space bar",
+            }); 
+		}
+		else if(n==23)
+		{
+		    rectangles.push(  
+		    {
+            x: (n-23) * 53 + 180,
+            y: 370,
+            width: 100,
+            height: 50,
+            color: colour,
+			letter:"  Shift",
+			letter1:"  Shift",
+            }); 
+		
+		
+		}
+
+      else
+	    {
+	        rectangles.push(
+			{
+            x: (n-22) * 53 + 180,
+            y:370,
+            width: 50,
+            height: 50,
+            color:colour,
+			letter:letters[n-1],
+			letter1:lettersm[n-2],
+	        });
+        }
+	}
+	
+
+
+//initialize strings
+strings[0] =     "A quick Brown Fox Jumps Over THe Lazy Dog";
+strings[1] =    "ABCD pani AAudaina Jaabo";
+strings[2] =	"Nursery Class Ma Padhna JAA";
+strings[3] =	"MAsterle ABCD sikana Sano MAa";
+strings[4] =	"HiHiHi abcd Padhdai chha";
+
+
+
+//image1.src="keyboard.png";
+
+	window.onload = function()
+	{   
+		canvas = document.getElementById("canvas"); //pass the canvas element
+		context = canvas.getContext("2d");  //get the context
+		x = canvas.width / 15;
+		y = canvas.height / 9;
+       // alert(String.fromCharCode(97));		
+		//context.fillRect(10,10,980,100);
+		//context.strokeRect(60,120,880,90);//70,105
+		//context.drawImage(image1,120,220);	
+		setInterval("display(context)",100); 
+	}; 
+
+		function display(context) // display the whole context
+		{ 
+         //context.strokeRect(50,340,75,350);
+		if(activate=1)
+		  document.addEventListener('keypress',doKeyDown,true);//add keyboard event
+			context.strokeRect(60,140,880,80);
+			context.strokeRect(10,10,980,70);			  
+				
+			context.clearRect(10,10,980,70);
+			context.font = "20px sans-serif";
+			context.textBaseline = "middle";
+			//context.fillStyle = "blue"; 
+			context.fillText(str,x,y);
+			
+			for(n=0;n<34;n++)
+			{//context.stroke();
+			context.fillStyle=rectangles[n].color;
+			context.strokeRect(rectangles[n].x,rectangles[n].y,rectangles[n].width,rectangles[n].height);
+			 //context.stroke();
+			context.strokeText(rectangles[n].letter,rectangles[n].x+20,rectangles[n].y+20);
+			}
+			
+			
+			for(n=0;n<34;n++)
+			{
+			  if(str[i]==rectangles[n].letter)
+			  { colour=1;
+			    rectangles[n].color="#ff0000";
+				context.fillRect(rectangles[n].x,rectangles[n].y,rectangles[n].width,rectangles[n].height);
+				context.strokeText(rectangles[n].letter,rectangles[n].x+20,rectangles[n].y+20);
+				context.fillRect(rectangles[23].x,rectangles[23].y,rectangles[23].width,rectangles[23].height);
+				context.strokeText(rectangles[23].letter,rectangles[23].x+20,rectangles[23].y+20);
+                rectTemp=n;
+			
+			  }
+			  if(str[i]==rectangles[n].letter1)
+			  { colour=1;
+			    rectangles[n].color="#ff0000";
+				context.fillRect(rectangles[n].x,rectangles[n].y,rectangles[n].width,rectangles[n].height);
+				context.strokeText(rectangles[n].letter,rectangles[n].x+20,rectangles[n].y+20);
+                rectTemp=n;
+				shift_active=1;
+			  }
+			 if(str[i]==" " && rectangles[n].letter=="               Space bar")
+			 { rectangles[n].color="#ff0000";
+			  context.fillRect(rectangles[n].x,rectangles[n].y,rectangles[n].width,rectangles[n].height);
+			  //rectangles[n].color="#000000";
+			  context.strokeText(rectangles[n].letter,rectangles[n].x+20,rectangles[n].y+20);
+			  rectTemp=n;
+			  }
+			}
+			//context.fillStyle = "black";
+			putCursor();
+			
+				if(str.length==strLength)
+				{   //alert(strLength);
+					strCount++;
+					str=strings[strCount];
+					rectClear=1;
+					strLength=0;
+					i=0;
+				}
+				if(strCount==4) 
+				strCount=0;
+                 if(tempCount==4)
+					tempCount=0;
+			//context.clearRect(60,120,880,90);
+		}
+
+			function putCursor() //cursor palcing
+			{   activate=1;
+				if(k%2==0)
+				context.fillStyle = "white"; 
+				else
+				context.fillStyle = "black";
+				k++;
+				if(k>10) k=0;
+				context.fillText("_",cursorShift,185);
+				context.fillStyle = "black";
+			}
+							
+				function doKeyDown(e) //keyboard event
+				{
+				charc=charConvert(e.keyCode);
+				//alert(charc+str[i]);
+					if(str[i]==charc)
+					{  	//rectangles[rectTemp].color="#FF0000";
+					    context.clearRect(rectangles[rectTemp].x,rectangles[rectTemp].y,rectangles[rectTemp].width,rectangles[rectTemp].height);
+						
+					    context.strokeRect(rectangles[rectTemp].x,rectangles[rectTemp].y,rectangles[rectTemp].width,rectangles[rectTemp].height);
+						if(shift_active=1){
+						context.clearRect(rectangles[23].x,rectangles[23].y,rectangles[23].width,rectangles[23].height);
+						context.strokeRect(rectangles[23].x,rectangles[23].y,rectangles[23].width,rectangles[23].height);
+						shift_active=0;
+						}
+					   // if(str[i]==" ")
+					    //alert(charc+str[i]);
+						//context.fillStyle = "blue";
+						context.clearRect(60,120,880,90);
+						
+						//streng[i]=str[i];
+						cursorShift=70;
+						var string1;
+						for(var j=0;j<=i;j++)
+						{
+						context.strokeText(str[j],cursorShift,185);
+						
+						
+						//context.fillstyle="black";
+						if(charc=='I')
+						cursorShift=cursorShift+16;
+						else
+						cursorShift=cursorShift+18;
+						
+						}
+						i++;
+						strLength++;
+					} 
+
+				}
+
+
+				function type(string) //set string typed by user
+				{	    
+				str=string;	
+				return false;
+				}
+
+				function defaultStrings()//set string default 
+				{    
+				    context.clearRect(0,0,800,450);
+				    strCount=tempCount;
+					str=strings[strCount];
+					//alert(strings[1]);
+					//alert(strCount);
+					tempCount++;
+					if(tempCount==4)
+					tempCount=0;
+				}
+
+
+			/*	function Chr(AsciiNum)//to convert ascci to character
+				{
+				return String.fromCharCode(AsciiNum)
+				}
+				*/
+				function charConvert(Ascii)
+{ 
+if( Ascii==44)
+ chac=',';
+if( Ascii==46)
+ chac='.';
+if( Ascii==58)
+ chac=':';
+if( Ascii==59)
+ chac=';';
+if( Ascii==60)
+ chac='<';
+if( Ascii==61)
+ chac='='; 		
+if( Ascii==62)
+ chac='>'; 	
+ if( Ascii==63)
+ chac='?';	
+if( Ascii==65)
+ chac='A';	
+if( Ascii==66)
+ chac='B';
+if( Ascii==67)
+ chac='C';
+if( Ascii==68)
+ chac='D';
+if( Ascii==69)
+ chac='E';
+if( Ascii==70)
+ chac='F';	
+if( Ascii==71)
+ chac='G';
+if( Ascii==72)
+ chac='H';
+if( Ascii==73)
+ chac='I';
+if( Ascii==74)
+ chac='J';
+if( Ascii==75)
+ chac='K';	
+if( Ascii==76)
+ chac='L';
+if( Ascii==77)
+ chac='M';
+if( Ascii==78)
+ chac='N';
+if( Ascii==79)
+ chac='O';
+if( Ascii==80)
+ chac='P';	
+if( Ascii==81)
+ chac='Q';
+if( Ascii==82)
+ chac='R';
+if( Ascii==83)
+ chac='S';
+if( Ascii==84)
+ chac='T';
+if( Ascii==85)
+ chac='U';	
+if( Ascii==86)
+ chac='V';
+if( Ascii==87)
+ chac='W';
+if( Ascii==88)
+ chac='X';
+if( Ascii==89)
+ chac='Y';
+if( Ascii==90)
+ chac='Z';	
+if( Ascii==91)	
+ chac='[';	
+if( Ascii==93)	
+ chac=']'; 	
+ if( Ascii==97)	
+ chac='a'; 
+if( Ascii==98)	
+ chac='b'; 
+if( Ascii==99)	
+ chac='c'; 
+if( Ascii==100)	
+ chac='d'; 
+if( Ascii==101)	
+ chac='e'; 	
+if( Ascii==102)	
+ chac='f'; 
+if( Ascii==103)	
+ chac='g'; 	
+if( Ascii==104)	
+ chac='h'; 
+if( Ascii==105)	
+ chac='i'; 	
+if( Ascii==106)	
+ chac='j'; 
+if( Ascii==107)	
+ chac='k'; 	
+if( Ascii==108)	
+ chac='l'; 
+if( Ascii==109)	
+ chac='m'; 	
+if( Ascii==110)	
+ chac='n'; 
+if( Ascii==111)	
+ chac='o'; 	
+if( Ascii==112)	
+ chac='p'; 
+if( Ascii==113)	
+ chac='q'; 	
+if( Ascii==114)	
+ chac='r'; 
+if( Ascii==115)	
+ chac='s'; 	
+if( Ascii==116)	
+ chac='t'; 	
+if( Ascii==117)	
+ chac='u'; 
+if( Ascii==118)	
+ chac='v'; 	
+if( Ascii==119)	
+ chac='w'; 
+if( Ascii==120)	
+ chac='x'; 	
+if( Ascii==121)	
+ chac='y'; 
+if( Ascii==122)	
+ chac='z'; 	
+if( Ascii==123)	
+ chac='{'; 
+if( Ascii==125)	
+ chac='}'; 
+if( Ascii==132)	
+ chac='"'; 
+if(Ascii==32)
+ chac=' '; 
+
+return chac;
+}
+
+
+
+
+</script>
+
+<title>Typing tutor</title>
+</head>
+<body>
+<div id="wrapper">
+
+
+
+<button onclick = "defaultStrings();" type="submit" name="GET" value="Default">click to add string</button>
+
+
+
+<canvas id="canvas" style="border:solid;" height="500px;" width="1000px;"bgcolor="#FFFFFF;"></canvas> 
+<div id="sprites">
+
+</div>
+</div>
+</body>
+</html>
